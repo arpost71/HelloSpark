@@ -74,10 +74,11 @@ public class ReadingNET {
                     books = db.selectBooks("*", "Authors");
                 }
                 else {
-                    books = db.searchBooks(request.queryParams("search"), request.queryParams("searchType"), "books");
+                    books = db.searchTitles(request.queryParams("search"));
                 }
 
                 if (login) {
+                    data.put("Count", books.size());
                     data.put("Books", books);
                     data.put("templateName", "viewbook.ftl");
                 } else
@@ -95,12 +96,14 @@ public class ReadingNET {
                 System.out.println(request.queryParams("search"));
                 if(request.queryParams("search") == null) {
                     books = db.selectBooks("*", "Authors");
+                    System.out.println(request.queryParams("search") + request.queryParams("searchType"));
                 }
                 else {
-                    books = db.searchBooks(request.queryParams("search"), request.queryParams("searchType"), "books");
+                    books = db.searchTitles(request.queryParams("search"));
                 }
 
                 if (login) {
+                    data.put("Count", books.size());
                     data.put("Books", books);
                     data.put("templateName", "viewbook.ftl");
                 } else
@@ -147,6 +150,38 @@ public class ReadingNET {
             }
         });
 
+        get(new FreeMarkerRoute("/view/advanced"){
+            @Override
+            public ModelAndView handle(Request request, Response response){
+                Map<String, Object> data = new HashMap<String, Object>();
+                ArrayList<ArrayList<String>> books = new ArrayList<ArrayList<String>>();
+                System.out.println(request.queryParams("search"));
+                if(request.queryParams("isbn") == null) {
+                    books = db.selectBooks("*", "Authors");
+                    System.out.println(request.queryParams("search") + request.queryParams("searchType"));
+                }
+                else {
+                    String isbn = request.queryParams("isbn");
+                    String title = request.queryParams("title");
+                    String author = request.queryParams("author");
+                    String readingLevel = request.queryParams("readingLevel[]");
+                    System.out.println("Reading Level:" + readingLevel);
+                    String publisher = request.queryParams("publisher");
+                    String genre = request.queryParams("genre");
+                    String status = request.queryParams("status");
+                    books = db.searchBooks(isbn, title, author, readingLevel, publisher, genre, status);
+                }
+
+                if (login) {
+                    data.put("Count", books.size());
+                    data.put("Books", books);
+                    data.put("templateName", "advancedbook.ftl");
+                } else
+                    data.put("templateName", "logincheck.ftl");
+
+                return modelAndView(data, "layout.ftl");
+            }
+        });
         get(new FreeMarkerRoute("/delete") {
             @Override
             public ModelAndView handle(Request request, Response response) {

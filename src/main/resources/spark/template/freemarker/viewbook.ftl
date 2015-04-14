@@ -1,32 +1,22 @@
 
 <div class="starter-template">
 <div class="row">
-    <form class="form-horizontal" role="form" id='view-books-form'>
+    <form class="form-horizontal" role="form" id='view-books-form' action "/view">
     <div class="col-sm-5">
         <div class="input-group">
-            <input type="text" class="form-control" name="search" placeholder="Search">
+            <input type="text" class="form-control" name="search" placeholder="Search Titles">
             <span class="input-group-btn">
-                <a href="/view" class="btn btn-default" role="button">Search</a>
+               <input type='submit' value='Search' class="btn btn-default" form='view-books-form'/>
             </span>
         </div>
-            <label class="col-sm-5 control-label" for="searchOptions" align="left">Search By: </label>
-                <div class="col-sm-5">
-                     <select class="form-control" id="searchOptions" name="searchType">
-                         <option value="isbn">ISBN</option>
-                         <option value="name">Name</option>
-                         <option value="author">Author</option>
-                         <option value="read_level">Reading Level</option>
-                         <option value="publisher">Publisher</option>
-                         <option value="genre">Genre</option>
-                     </select>
-                </div>
+        <a href="/view/advanced">Advanced Search</a>
+        </div>
     </div>
-</div>
 </form>
-<br>
-<br>
+
+</div>
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>Books</h4></div>
+  <div class="panel-heading"><h5>Your search returned ${Count} results.</h5></div>
   <table class="table table-hover">
     <thead>
         <tr>

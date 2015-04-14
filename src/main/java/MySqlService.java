@@ -82,6 +82,7 @@ public class MySqlService {
                 Logger lgr = Logger.getLogger(ReadingNET.class.getName());
                 lgr.log(Level.WARNING, ex.getMessage(), ex);
         }
+        System.out.println(items.size());
         return items;
     }
 
@@ -105,10 +106,74 @@ public class MySqlService {
         return items;
     }
 
-    public ArrayList<ArrayList<String>> searchBooks(String item, String type, String table){
+    public ArrayList<ArrayList<String>> searchBooks(String isbn, String title, String author, String readingLevel, String publisher, String genre, String status){
+        ArrayList<ArrayList<String>> items = new ArrayList<ArrayList<String>>();
+        String query = ("Select * FROM books WHERE ");
+        boolean start = true;
+        if(isbn != null) {
+            start = false;
+            query = query + "isbn LIKE '%" + isbn + "%'";
+        }
+        if (title != null){
+            if (!start)
+                query += " AND ";
+            start = false;
+            query = query + "title LIKE '%" + title.toLowerCase() +"%'";
+        }
+        if (author != null){
+            if (!start)
+                query += " AND ";
+            start = false;
+            query = query + "author LIKE '%" + author.toLowerCase() +"%'";
+        }
+        if (readingLevel != ""){
+            if (!start)
+                query += " AND ";
+            start = false;
+            query = query + "read_level LIKE '%" + readingLevel +"%'";
+        }
+        if (publisher != null){
+            if (!start)
+                query += " AND ";
+            start = false;
+            query = query + "publisher LIKE '%" + publisher.toLowerCase() +"%'";
+        }
+        if (genre != ""){
+            if (!start)
+                query += " AND ";
+            start = false;
+            query = query + "genre LIKE '%" + genre +"%'";
+        }
+        if (title != null){
+            if (!start)
+                query += " AND ";
+            start = false;
+            query = query + "status LIKE '%" + status +"%'";
+        }
+
+
+        try {
+            pst = con.prepareStatement(query);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                ArrayList<String> books = new ArrayList<String>();
+                for (int j = 1; j < 8; j++) {
+                    books.add(rs.getString(j));
+                }
+                items.add(books);
+            }
+
+        }catch (SQLException ex){
+            Logger lgr = Logger.getLogger(ReadingNET.class.getName());
+            lgr.log(Level.WARNING, ex.getMessage(), ex);
+        }
+        return items;
+    }
+
+    public ArrayList<ArrayList<String>> searchTitles(String title){
         ArrayList<ArrayList<String>> items = new ArrayList<ArrayList<String>>();
         try {
-            pst = con.prepareStatement("SELECT * FROM " + table + " WHERE " + type +" LIKE '%"+ item + "%'");
+            pst = con.prepareStatement("SELECT * FROM books WHERE title LIKE '%"+ title + "%'");
             rs = pst.executeQuery();
             while (rs.next()) {
                 ArrayList<String> books = new ArrayList<String>();
